@@ -1,4 +1,4 @@
-"""LangGraph wiring for OracleIQ.
+"""LangGraph wiring for Quorum.
 
 Same router pattern that makes the skills+modes architecture work:
 

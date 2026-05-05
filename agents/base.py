@@ -1,4 +1,4 @@
-"""Shared agent scaffolding for OracleIQ.
+"""Shared agent scaffolding for Quorum.
 
 Defines:
   * ``AgentState`` — the TypedDict that flows through LangGraph.

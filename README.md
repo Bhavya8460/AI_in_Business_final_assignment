@@ -1,4 +1,4 @@
-# 🎯 OracleIQ — Buffett-Inspired Investment Due Diligence
+# 🎯 Quorum — Buffett-Inspired Investment Due Diligence
 
 > **9 specialized AI agents. Real SEC filings. Verdicts tailored to you.**
 
@@ -13,7 +13,7 @@
 
 ## ⚠️ Disclaimer
 
-**OracleIQ is an educational tool, not a financial advisor.** All output is
+**Quorum is an educational tool, not a financial advisor.** All output is
 AI-generated analysis based on public data. Past performance does not predict
 future returns. Always consult a licensed financial advisor before making
 investment decisions. The creators are not liable for investment outcomes.
@@ -30,7 +30,7 @@ moats — takes a senior analyst a full day per name.
 
 ## The Solution
 
-**OracleIQ** turns that day into three minutes by orchestrating nine
+**Quorum** turns that day into three minutes by orchestrating nine
 specialized AI agents, each grounded in a single Warren Buffett
 principle. The system reads the actual SEC filings, runs three
 independent valuation models, and delivers a verdict that's *tailored
@@ -126,7 +126,7 @@ final memo + a 12-item Buffett checklist with PASS/FAIL/NEUTRAL per item.
 ## Quick Start
 
 ```bash
-git clone <your-fork> oracleiq && cd oracleiq
+git clone <your-fork> quorum && cd quorum
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env  # then fill in API keys
@@ -142,7 +142,7 @@ Three values go in `.env` (or `.streamlit/secrets.toml` for Streamlit Cloud):
 ```bash
 ANTHROPIC_API_KEY=sk-ant-...                # https://console.anthropic.com/
 TAVILY_API_KEY=tvly-...                     # https://tavily.com  (free tier OK)
-SEC_USER_AGENT=OracleIQ Project you@domain.com  # SEC requires identification
+SEC_USER_AGENT=Quorum Project you@domain.com  # SEC requires identification
 ```
 
 `edgartools` and `yfinance` need no keys.
@@ -158,7 +158,7 @@ SEC_USER_AGENT=OracleIQ Project you@domain.com  # SEC requires identification
    ```toml
    ANTHROPIC_API_KEY = "sk-ant-..."
    TAVILY_API_KEY    = "tvly-..."
-   SEC_USER_AGENT    = "OracleIQ Project you@example.com"
+   SEC_USER_AGENT    = "Quorum Project you@example.com"
    ```
 5. **Deploy**. ~3 minutes later you have a public URL.
 
@@ -167,7 +167,7 @@ SEC_USER_AGENT=OracleIQ Project you@domain.com  # SEC requires identification
 ## Project layout
 
 ```
-oracleiq/
+quorum/
 ├── app.py                          # main page (Run Analysis)
 ├── agent.py                        # LangGraph graph + router
 ├── config.py                       # MODES, BUFFETT_CHECKLIST, thresholds
@@ -236,7 +236,7 @@ oracleiq/
 
 ## ⚠️ One more time
 
-**OracleIQ is an educational tool, not a financial advisor.** All output is
+**Quorum is an educational tool, not a financial advisor.** All output is
 AI-generated analysis based on public data. Past performance does not predict
 future returns. Always consult a licensed financial advisor before making
 investment decisions. The creators are not liable for investment outcomes.
