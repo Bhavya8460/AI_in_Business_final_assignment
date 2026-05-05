@@ -1,4 +1,4 @@
-"""Reusable Streamlit + Plotly building blocks for OracleIQ.
+"""Reusable Streamlit + Plotly building blocks for Quorum.
 
 Things every page might want: themed CSS, a hero, agent status cards, a
 verdict banner, a Buffett-checklist row, gauges, etc.
