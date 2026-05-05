@@ -1,4 +1,4 @@
-"""OracleIQ — main Streamlit entry point."""
+"""Quorum — main Streamlit entry point."""
 
 from __future__ import annotations
 
@@ -30,7 +30,7 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 
 st.set_page_config(
-    page_title="OracleIQ — Buffett-Inspired Due Diligence",
+    page_title="Quorum — Buffett-Inspired Due Diligence",
     page_icon="🎯",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -55,7 +55,7 @@ _init_session()
 # Hero + disclaimer
 # ---------------------------------------------------------------------------
 hero(
-    "OracleIQ — Buffett-Inspired Investment Due Diligence",
+    "Quorum — Buffett-Inspired Investment Due Diligence",
     "9 specialized AI agents · Real SEC filings · Verdict tailored to you.",
 )
 disclaimer_banner()
@@ -251,7 +251,7 @@ if final:
             st.download_button(
                 "📥 Download PDF",
                 data=pdf_bytes,
-                file_name=f"oracleiq_{final.get('ticker', 'report').lower()}.pdf",
+                file_name=f"quorum_{final.get('ticker', 'report').lower()}.pdf",
                 mime="application/pdf",
                 use_container_width=True,
             )

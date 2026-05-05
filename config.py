@@ -1,4 +1,4 @@
-"""Central configuration for OracleIQ.
+"""Central configuration for Quorum.
 
 All thresholds, model parameters, mode definitions, and Buffett-checklist
 items live here so the rest of the codebase imports a single source of
@@ -11,7 +11,7 @@ from __future__ import annotations
 # Disclaimer — referenced by the UI and PDF export
 # ---------------------------------------------------------------------------
 DISCLAIMER = (
-    "OracleIQ is an educational tool, not a financial advisor. All output "
+    "Quorum is an educational tool, not a financial advisor. All output "
     "is AI-generated analysis based on public data. Past performance does "
     "not predict future returns. Always consult a licensed financial "
     "advisor before making investment decisions. The creators are not "
@@ -30,7 +30,7 @@ TEMPERATURE = 0.3  # low for analytical accuracy
 # ---------------------------------------------------------------------------
 # SEC EDGAR — required identification per SEC fair-access rules
 # ---------------------------------------------------------------------------
-SEC_USER_AGENT = "OracleIQ Educational Project student@university.edu"
+SEC_USER_AGENT = "Quorum Educational Project student@university.edu"
 
 
 # ---------------------------------------------------------------------------
