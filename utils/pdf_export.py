@@ -154,7 +154,7 @@ def build_pdf(state: dict) -> bytes:
         rightMargin=0.7 * inch,
         topMargin=0.6 * inch,
         bottomMargin=0.6 * inch,
-        title=f"OracleIQ — {state.get('ticker', 'Report')}",
+        title=f"Quorum — {state.get('ticker', 'Report')}",
     )
     styles = _styles()
     story: list = []
@@ -163,7 +163,7 @@ def build_pdf(state: dict) -> bytes:
     mode = state.get("mode", "—")
     risk = state.get("risk_profile") or {}
 
-    story.append(Paragraph(f"OracleIQ — {_esc(ticker)}", styles["title"]))
+    story.append(Paragraph(f"Quorum — {_esc(ticker)}", styles["title"]))
     story.append(
         Paragraph(
             f"Mode: <b>{_esc(mode)}</b> · Risk tolerance: "
@@ -354,7 +354,7 @@ def build_pdf(state: dict) -> bytes:
             story.append(
                 Paragraph(
                     f"[{result}] <b>{_esc(item['question'])}</b> — {_esc(comment)}",
-                    styles["body"],
+                    styles["body"]
                 )
             )
 
@@ -365,7 +365,7 @@ def build_pdf(state: dict) -> bytes:
             story.append(
                 Paragraph(
                     f"• <b>{_esc(err.get('node'))}</b>: {_esc(err.get('error'))}",
-                    styles["body"],
+                    styles["body"]
                 )
             )
 
@@ -376,7 +376,7 @@ def build_pdf(state: dict) -> bytes:
             story.append(
                 Paragraph(
                     f"• <b>{_esc(f.get('form'))}</b> filed {_esc(f.get('filing_date'))} — used by {_esc(f.get('agent'))}",
-                    styles["body"],
+                    styles["body"]
                 )
             )
 
@@ -384,7 +384,7 @@ def build_pdf(state: dict) -> bytes:
     story.append(
         Paragraph(
             f"<b>Disclaimer.</b> {DISCLAIMER}",
-            styles["disclaimer"],
+            styles["disclaimer"]
         )
     )
 
