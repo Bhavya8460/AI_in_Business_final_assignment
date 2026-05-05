@@ -7,6 +7,8 @@ truth.
 
 from __future__ import annotations
 
+import os
+
 # ---------------------------------------------------------------------------
 # Disclaimer — referenced by the UI and PDF export
 # ---------------------------------------------------------------------------
@@ -22,15 +24,15 @@ DISCLAIMER = (
 # ---------------------------------------------------------------------------
 # LLM configuration
 # ---------------------------------------------------------------------------
-MODEL_NAME = "claude-sonnet-4-5-20250929"
-MAX_TOKENS = 4096
-TEMPERATURE = 0.3  # low for analytical accuracy
+MODEL_NAME = os.getenv("MODEL_NAME", "claude-sonnet-4-5-20250929")
+MAX_TOKENS = int(os.getenv("MAX_TOKENS", "4096"))
+TEMPERATURE = float(os.getenv("TEMPERATURE", "0.3"))  # low for analytical accuracy
 
 
 # ---------------------------------------------------------------------------
 # SEC EDGAR — required identification per SEC fair-access rules
 # ---------------------------------------------------------------------------
-SEC_USER_AGENT = "Quorum Educational Project student@university.edu"
+SEC_USER_AGENT = os.getenv("SEC_USER_AGENT", "Quorum Project you@example.com")
 
 
 # ---------------------------------------------------------------------------
