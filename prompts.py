@@ -1,4 +1,4 @@
-"""All LLM prompts used by OracleIQ agents.
+"""All LLM prompts used by Quorum agents.
 
 Each prompt asks Claude to take on the voice of a Warren Buffett-style
 analyst. We keep prompts in one file so tone-tuning is a single edit.
