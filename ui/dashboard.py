@@ -28,11 +28,16 @@ from utils.formatting import (
 )
 
 
+_SUMMARY_MAX_CHARS = 180
+
+
 # ---------------------------------------------------------------------------
 # Top-level dashboard
 # ---------------------------------------------------------------------------
 def render_dashboard(state: dict) -> None:
     _render_top_summary(state)
+
+    st.markdown('<div class="ciq-summary-spacer"></div>', unsafe_allow_html=True)
 
     tab_specs: list[tuple[str, str, callable]] = []
 
@@ -77,16 +82,34 @@ def _render_top_summary(state: dict) -> None:
     thesis = state.get("thesis") or {}
     valuation = state.get("valuation") or {}
     business = state.get("business") or {}
+    mode = state.get("mode", "")
 
-    verdict = thesis.get("verdict", "PENDING")
+    has_thesis = bool(state.get("thesis")) and "error" not in thesis
+    has_valuation = bool(state.get("valuation")) and "error" not in valuation
+
+    verdict = thesis.get("verdict", "PENDING") if has_thesis else "PENDING"
     risk_adjusted = thesis.get("risk_adjusted_verdict", "")
-    score = thesis.get("buffett_score")
-    mos = valuation.get("margin_of_safety_pct")
-    price = valuation.get("current_price")
-    iv_mid = (valuation.get("intrinsic_value_range") or {}).get("mid")
+    score = thesis.get("buffett_score") if has_thesis else None
+    mos = valuation.get("margin_of_safety_pct") if has_valuation else None
+    price = valuation.get("current_price") if has_valuation else None
+    iv_mid = (valuation.get("intrinsic_value_range") or {}).get("mid") if has_valuation else None
 
-    summary_line = risk_adjusted or business.get("buffett_assessment", "")[:240]
+    summary_source = risk_adjusted or business.get("buffett_assessment", "")
+    summary_line = truncate(summary_source, _SUMMARY_MAX_CHARS)
     verdict_banner(verdict, summary_line)
+
+    if not has_thesis or not has_valuation:
+        missing = []
+        if not has_thesis:
+            missing.append("Buffett Score / verdict (needs **Thesis** agent)")
+        if not has_valuation:
+            missing.append("Margin of Safety / intrinsic value (needs **Valuation** agent)")
+        st.warning(
+            "Some summary metrics are unavailable with the selected analysis mode. "
+            "Switch to **Full Buffett Brief** or **Deep Value Hunt** to see: "
+            + " · ".join(missing),
+            icon="⚠️",
+        )
 
     g1, g2, g3 = st.columns(3)
     with g1:
@@ -95,11 +118,33 @@ def _render_top_summary(state: dict) -> None:
             use_container_width=True,
             key="hdr_score",
         )
+        st.markdown(
+            "<div style='text-align:center;font-size:0.78rem;color:#64748b;margin-top:-14px;padding:0 8px;'>"
+            + ("How well the stock matches Buffett's investing criteria. "
+               "<b style='color:#ef4444;'>0–40</b> weak · "
+               "<b style='color:#f59e0b;'>40–65</b> fair · "
+               "<b style='color:#059669;'>65+</b> strong"
+               if has_thesis else
+               "Requires the Thesis agent — run Full Buffett Brief or Deep Value.")
+            + "</div>",
+            unsafe_allow_html=True,
+        )
     with g2:
         st.plotly_chart(
             margin_of_safety_gauge(mos),
             use_container_width=True,
             key="hdr_mos",
+        )
+        st.markdown(
+            "<div style='text-align:center;font-size:0.78rem;color:#64748b;margin-top:-14px;padding:0 8px;'>"
+            + ("Discount to estimated intrinsic value. "
+               "<b style='color:#ef4444;'>Negative</b> = overpriced · "
+               "<b style='color:#f59e0b;'>0–25%</b> = fair · "
+               "<b style='color:#059669;'>25%+</b> = good deal"
+               if has_valuation else
+               "Requires the Valuation agent — run Full Buffett Brief or Deep Value.")
+            + "</div>",
+            unsafe_allow_html=True,
         )
     with g3:
         st.markdown("##### Price vs intrinsic value")
@@ -112,6 +157,13 @@ def _render_top_summary(state: dict) -> None:
         ideal = thesis.get("ideal_entry_price")
         if ideal:
             st.metric("Ideal entry price", fmt_price(ideal))
+        st.markdown(
+            "<div style='font-size:0.75rem;color:#94a3b8;margin-top:8px;line-height:1.4;'>"
+            "IV is a conservative Buffett-style estimate (DCF + OE×15 + EPV average). "
+            "Premium brands often trade well above this floor. See the Valuation tab for details."
+            "</div>",
+            unsafe_allow_html=True,
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -435,15 +487,41 @@ def _valuation(state: dict) -> None:
     iv_range = v.get("intrinsic_value_range") or {}
     valuations = v.get("valuations") or {}
 
+    st.info(
+        "These models use strict Buffett criteria — a **10% hurdle rate**, "
+        "conservative multiples, and no premium for brand or market sentiment. "
+        "Stocks with high P/E ratios (e.g. large-cap tech) will often show a "
+        "negative margin of safety. That's expected: it means the market is pricing "
+        "in growth that Buffett wouldn't pay for upfront.",
+        icon="ℹ️",
+    )
+
     c1, c2, c3 = st.columns(3)
     c1.metric("Current price", fmt_price(price))
     c2.metric("Intrinsic value (mid)", fmt_price(iv_range.get("mid")))
     c3.metric("Margin of safety", fmt_pct(v.get("margin_of_safety_pct")))
 
+    st.markdown(
+        "<div style='font-size:0.82rem;color:#64748b;margin:-8px 0 12px 0;'>"
+        "Intrinsic value is the average of the three models below. "
+        "Margin of safety = (IV − Price) ÷ IV. Negative means the stock trades above estimated value."
+        "</div>",
+        unsafe_allow_html=True,
+    )
+
     c4, c5, c6 = st.columns(3)
-    c4.metric("DCF value", fmt_price(valuations.get("dcf_value")))
+    c4.metric("DCF", fmt_price(valuations.get("dcf_value")))
     c5.metric("Owner earnings × 15", fmt_price(valuations.get("owner_earnings_value")))
-    c6.metric("EPV", fmt_price(valuations.get("epv_value")))
+    c6.metric("EPV (no-growth floor)", fmt_price(valuations.get("epv_value")))
+
+    st.markdown(
+        "<div style='font-size:0.80rem;color:#64748b;margin:-8px 0 14px 0;'>"
+        "<b>DCF</b> — 10-yr cash flow projection, 10% discount rate, growth capped at 15% · "
+        "<b>OE×15</b> — owner earnings × 15 (Buffett's ceiling multiple) · "
+        "<b>EPV</b> — zero-growth perpetuity; the absolute floor if the company never expands"
+        "</div>",
+        unsafe_allow_html=True,
+    )
 
     c7, c8, c9 = st.columns(3)
     c7.metric("P/E (TTM)", _fmt_ratio(v.get("current_pe")))
@@ -451,7 +529,7 @@ def _valuation(state: dict) -> None:
     c9.metric("Dividend yield", fmt_pct(v.get("dividend_yield")) if v.get("dividend_yield") and v.get("dividend_yield") < 1 else fmt_pct((v.get("dividend_yield") or 0) / 100))
 
     st.divider()
-    st.markdown("#### Intrinsic value range")
+    st.markdown("#### Intrinsic value range vs market price")
     chart_rows = []
     for label, val in [("DCF", valuations.get("dcf_value")), ("Owner earnings", valuations.get("owner_earnings_value")), ("EPV", valuations.get("epv_value"))]:
         if val is not None:

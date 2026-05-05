@@ -109,19 +109,38 @@ GLOBAL_CSS = """
     /* Verdict banner */
     .ciq-verdict {
         border-radius: 14px;
-        padding: 24px 28px;
-        color: #ffffff;
-        margin-bottom: 12px;
+        padding: 22px 28px 24px 28px;
+        color: #ffffff !important;
+        margin: 4px 0 18px 0;
+        box-shadow: 0 2px 6px rgba(15,23,42,0.08);
     }
     .ciq-verdict h2 {
         font-family: Georgia, serif;
-        margin: 0 0 8px 0;
-        font-size: 2rem;
+        margin: 0 0 6px 0;
+        font-size: 1.9rem;
+        line-height: 1.2;
+        color: #ffffff !important;
+        letter-spacing: 0.5px;
     }
     .ciq-verdict p {
         margin: 0;
         font-size: 0.95rem;
-        opacity: 0.9;
+        line-height: 1.5;
+        color: #ffffff !important;
+        opacity: 0.95;
+    }
+
+    /* Top summary spacing — gauges row needs breathing room before tabs */
+    .ciq-summary-spacer { height: 18px; }
+
+    /* Streamlit tabs polish */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 4px;
+        margin-top: 8px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .stTabs [data-baseweb="tab"] {
+        padding: 8px 14px;
     }
 
     /* Checklist row */
@@ -255,11 +274,16 @@ def mode_card_html(label: str, description: str, agents: Iterable[str], eta: str
 def verdict_banner(verdict: Optional[str], summary_line: str = "") -> None:
     color = verdict_color(verdict)
     label = verdict or "PENDING"
+    summary_html = (
+        f'<p style="margin:0;color:#ffffff;font-size:0.95rem;line-height:1.5;opacity:0.95;">{summary_line}</p>'
+        if summary_line
+        else ""
+    )
     st.markdown(
         f"""
-        <div class="ciq-verdict" style="background:linear-gradient(90deg, {color}cc 0%, {color} 100%);">
-            <h2>{label}</h2>
-            <p>{summary_line}</p>
+        <div class="ciq-verdict" style="background:linear-gradient(135deg, {color}e6 0%, {color} 100%);">
+            <h2 style="margin:0 0 6px 0;color:#ffffff;font-family:Georgia,serif;font-size:1.9rem;line-height:1.2;letter-spacing:0.5px;">{label}</h2>
+            {summary_html}
         </div>
         """,
         unsafe_allow_html=True,
@@ -270,55 +294,69 @@ def verdict_banner(verdict: Optional[str], summary_line: str = "") -> None:
 # Plotly gauges
 # ---------------------------------------------------------------------------
 def buffett_score_gauge(score: Optional[float]) -> go.Figure:
-    val = float(score) if score is not None else 0.0
+    has_data = score is not None
+    val = float(score) if has_data else 0.0
+    bar_color = "#047857" if has_data else "rgba(0,0,0,0)"
+    gauge_cfg: dict = {
+        "axis": {"range": [0, 100], "tickwidth": 1, "tickcolor": "#94a3b8"},
+        "bar": {"color": bar_color, "thickness": 0.18},
+        "bgcolor": "#f8fafc",
+        "borderwidth": 0,
+        "steps": [
+            {"range": [0, 40], "color": "#fee2e2"},
+            {"range": [40, 65], "color": "#fef3c7"},
+            {"range": [65, 100], "color": "#dcfce7"},
+        ],
+    }
+    if has_data:
+        gauge_cfg["threshold"] = {
+            "line": {"color": "#047857", "width": 3},
+            "thickness": 0.75,
+            "value": val,
+        }
     fig = go.Figure(
         go.Indicator(
             mode="gauge+number",
             value=val,
-            number={"font": {"size": 38, "color": "#0f172a"}, "suffix": "/100"},
-            gauge={
-                "axis": {"range": [0, 100], "tickwidth": 1, "tickcolor": "#94a3b8"},
-                "bar": {"color": "#047857", "thickness": 0.18},
-                "bgcolor": "#f8fafc",
-                "borderwidth": 0,
-                "steps": [
-                    {"range": [0, 40], "color": "#fee2e2"},
-                    {"range": [40, 65], "color": "#fef3c7"},
-                    {"range": [65, 100], "color": "#dcfce7"},
-                ],
-                "threshold": {
-                    "line": {"color": "#047857", "width": 3},
-                    "thickness": 0.75,
-                    "value": val,
-                },
-            },
+            number={"font": {"size": 26, "color": "#0f172a"}, "suffix": "/100"},
+            gauge=gauge_cfg,
             title={"text": "Buffett Score", "font": {"size": 14, "color": "#475569"}},
         )
     )
-    fig.update_layout(height=240, margin=dict(l=20, r=20, t=30, b=10), paper_bgcolor="rgba(0,0,0,0)")
+    fig.update_layout(
+        height=260,
+        margin=dict(l=20, r=20, t=40, b=30),
+        paper_bgcolor="rgba(0,0,0,0)",
+    )
     return fig
 
 
 def margin_of_safety_gauge(mos: Optional[float]) -> go.Figure:
-    val = float(mos) * 100 if mos is not None else 0.0
+    has_data = mos is not None
+    val = float(mos) * 100 if has_data else 0.0
+    bar_color = "#047857" if has_data else "rgba(0,0,0,0)"
     fig = go.Figure(
         go.Indicator(
             mode="gauge+number",
             value=val,
-            number={"font": {"size": 32}, "suffix": "%"},
+            number={"font": {"size": 24, "color": "#0f172a"}, "suffix": "%"},
             gauge={
                 "axis": {"range": [-50, 60]},
-                "bar": {"color": "#047857"},
+                "bar": {"color": bar_color, "thickness": 0.25},
                 "steps": [
                     {"range": [-50, 0], "color": "#fee2e2"},
                     {"range": [0, 25], "color": "#fef3c7"},
                     {"range": [25, 60], "color": "#dcfce7"},
                 ],
             },
-            title={"text": "Margin of Safety", "font": {"size": 14}},
+            title={"text": "Margin of Safety", "font": {"size": 14, "color": "#475569"}},
         )
     )
-    fig.update_layout(height=220, margin=dict(l=20, r=20, t=30, b=10), paper_bgcolor="rgba(0,0,0,0)")
+    fig.update_layout(
+        height=260,
+        margin=dict(l=20, r=20, t=40, b=30),
+        paper_bgcolor="rgba(0,0,0,0)",
+    )
     return fig
 
 

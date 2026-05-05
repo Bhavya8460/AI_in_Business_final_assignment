@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Secrets — never bake into image
+.env
+.env.local
+.streamlit/secrets.toml
+
+# Git / IDE
+.git/
+.gitignore
+.idea/
+.vscode/
+.claude/
+.DS_Store
+
+# Cache / build artefacts
+.cache/
+.pytest_cache/
+edgar_cache/
+build/
+dist/
+
+# Logs / exports / images
+*.log
+exports/
+*.png
+*.jpg
+*.jpeg
+
+# Docs not needed at runtime
+PROJECT_REVIEW_*.md
+README.md
