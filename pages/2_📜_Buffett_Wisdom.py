@@ -7,14 +7,14 @@ import streamlit as st
 from config import AGENT_META, BUFFETT_CHECKLIST
 from ui.components import buffett_quote, hero, inject_css
 
-st.set_page_config(page_title="Buffett's Wisdom — OracleIQ", page_icon="📜", layout="wide")
+st.set_page_config(page_title="Buffett's Wisdom — Quorum", page_icon="📜", layout="wide")
 inject_css()
 
 hero("📜 Buffett's Wisdom", "The principles that drive every agent in the system.")
 
 st.markdown(
     """
-OracleIQ encodes Warren Buffett's investing philosophy into nine specialized
+Quorum encodes Warren Buffett's investing philosophy into nine specialized
 agents. Each agent is built around a single principle from Buffett's
 letters and Berkshire Hathaway's annual reports — and the system as a
 whole is inspired by the framework laid out in *The Warren Buffett Way*

@@ -7,10 +7,10 @@ import streamlit as st
 from config import AGENT_META, MODES
 from ui.components import disclaimer_banner, hero, inject_css
 
-st.set_page_config(page_title="About — OracleIQ", page_icon="📚", layout="wide")
+st.set_page_config(page_title="About — Quorum", page_icon="📚", layout="wide")
 inject_css()
 
-hero("📚 Architecture", "How OracleIQ uses skills + modes to power Buffett-style due diligence.")
+hero("📚 Architecture", "How Quorum uses skills + modes to power Buffett-style due diligence.")
 disclaimer_banner()
 
 # ---------------------------------------------------------------------------
@@ -38,7 +38,7 @@ st.divider()
 st.markdown("### The Skills + Modes Pattern")
 st.markdown(
     """
-OracleIQ borrows the **skills + modes** pattern from
+Quorum borrows the **skills + modes** pattern from
 [`santifer/career-ops`](https://github.com/santifer/career-ops):
 
 - **Skills** are independent, single-job agents grounded in a Buffett principle.

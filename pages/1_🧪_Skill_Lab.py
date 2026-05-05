@@ -18,7 +18,7 @@ from ui.dashboard import render_single_agent
 load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 
-st.set_page_config(page_title="Skill Lab — OracleIQ", page_icon="🧪", layout="wide")
+st.set_page_config(page_title="Skill Lab — Quorum", page_icon="🧪", layout="wide")
 inject_css()
 
 hero("🧪 Skill Lab", "Fire any single Buffett agent. See its raw and formatted output.")
